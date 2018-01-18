@@ -1,0 +1,13 @@
+/**
+    @brief  Static (heapless) implementation of STL containers.
+
+    This library provides containers which can be allocated at compile time and
+    used in situations where there is no heap available.
+*/
+
+#ifndef STATIC_STL_SSTL_H_
+#define STATIC_STL_SSTL_H_
+
+
+
+#endif /* STATIC_STL_SSTL_H_ */
