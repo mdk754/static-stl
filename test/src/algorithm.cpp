@@ -190,4 +190,56 @@ struct copy_n_int : public test {
 
 copy_n_int t8;
 
+struct min_int_unique : public test {
+	min_int_unique() : test("min() with unique integers") {}
+
+	bool run() {
+		int a = 7;
+		int b = 13;
+
+		return sstl::min(a, b) == 7;
+	}
+};
+
+min_int_unique t9;
+
+struct min_int_equal : public test {
+	min_int_equal() : test("min() with equal integers") {}
+
+	bool run() {
+		int a = 7;
+		int b = 7;
+
+		return sstl::min(a, b) == 7;
+	}
+};
+
+min_int_equal t10;
+
+struct max_int_unique : public test {
+	max_int_unique() : test("max() with unique integers") {}
+
+	bool run() {
+		int a = 7;
+		int b = 13;
+
+		return sstl::max(a, b) == 13;
+	}
+};
+
+max_int_unique t11;
+
+struct max_int_equal : public test {
+	max_int_equal() : test("max() with equal integers") {}
+
+	bool run() {
+		int a = 7;
+		int b = 7;
+
+		return sstl::max(a, b) == 7;
+	}
+};
+
+max_int_equal t12;
+
 } /* namespace algorithm */
