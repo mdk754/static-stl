@@ -1,6 +1,6 @@
 #include "test.h"
 
-#include "sstl"
+#include "algorithm.h"
 
 namespace algorithm {
 
