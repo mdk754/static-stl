@@ -1,0 +1,13 @@
+#include "test.h"
+
+#include "sstl"
+
+struct sample_test : public test {
+	sample_test() : test("Sample Test") {}
+
+	bool run() {
+		return dostuff();
+	}
+};
+
+sample_test t1;
