@@ -54,6 +54,29 @@ inline OutputIt copy_n(InputIt first, Size len, OutputIt dest) {
 	return dest;
 }
 
+/** Returns the smaller of the given values. */
+template<typename T>
+inline const T& min(const T& a, const T& b) {
+	return b < a ? b : a;
+}
+
+/** Returns the smaller of the given values, via comparison functor. */
+template<typename T, class Compare>
+inline const T& min(const T& a, const T& b, Compare comp) {
+	return comp(b, a) ? b : a;
+}
+
+/** Returns the greater of the given values. */
+template<typename T>
+inline const T& max(const T& a, const T& b) {
+	return a < b ? b : a;
+}
+
+/** Returns the greater of the given values, via comparison functor. */
+template<typename T, class Compare>
+inline const T& max(const T& a, const T& b, Compare comp) {
+	return comp(a, b) ? b : a;
+}
 
 } /* namespace sstl */
 
