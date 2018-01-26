@@ -1,0 +1,17 @@
+#include "test.h"
+
+#include "sstl"
+
+namespace sample_test {
+
+struct test1 : public test {
+	test1() : test("Sample Test") {}
+
+	bool run() {
+		return true;
+	}
+};
+
+test1 t1;
+
+} /* namespace sample_test */
