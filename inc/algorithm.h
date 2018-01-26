@@ -26,6 +26,35 @@ inline ForwardIt2 swap_ranges(ForwardIt1 first1, ForwardIt1 last1,
 	return first2;
 }
 
+/** Assigns the given value to the elements in the range [first, last]. */
+template<class ForwardIt, typename T>
+inline void fill(ForwardIt first, ForwardIt last, const T& val) {
+	for (; first != last; ++first) { *first = val; }
+}
+
+/** Assigns the given value to the first len elements in the range beginning at first if len > 0. */
+template<class OutputIt, class Size, typename T>
+inline OutputIt fill_n(OutputIt first, Size len, const T& val) {
+	for (; len; --len, ++first) { *first = val; }
+
+	return first;
+}
+
+/** Copies the elements in the range, defined by [first, last], to another range beginning at dest. */
+template<class InputIt, class OutputIt>
+inline void copy(InputIt first, InputIt last, OutputIt dest) {
+	for (; first != last; ++first, ++dest) { *dest = *first; }
+}
+
+/** Copies exactly len values from the range beginning at first to the range beginning at dest, if len > 0. */
+template<class InputIt, class Size, class OutputIt>
+inline OutputIt copy_n(InputIt first, Size len, OutputIt dest) {
+	for (; len; --len, ++first, ++dest) { *dest = *first; }
+
+	return dest;
+}
+
+
 } /* namespace sstl */
 
 #endif /* STATIC_STL_ALGORITHM_H_ */
