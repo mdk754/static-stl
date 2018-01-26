@@ -90,4 +90,104 @@ struct swap_ranges_int : public test {
 
 swap_ranges_int t4;
 
+struct fill_int : public test {
+	fill_int() : test("fill() with integers") {}
+
+	bool run() {
+		size_t count = 7;
+
+		int a[count] = {0};
+
+		sstl::fill(a, &a[count], 20);
+
+		for (unsigned i = 0; i < count; ++i) {
+			if (a[i] != 20) { return false; }
+		}
+
+		return true;
+	}
+};
+
+fill_int t5;
+
+struct fill_n_int : public test {
+	fill_n_int() : test("fill_n() with integers") {}
+
+	bool run() {
+		size_t count = 7;
+		size_t filled = count - 2;
+
+		int a[count] = {0};
+
+		sstl::fill_n(a, filled, 20);
+
+		for (unsigned i = 0; i < filled; ++i) {
+			if (a[i] != 20) { return false; }
+		}
+
+		for (unsigned i = filled; i < count; ++i) {
+			if (a[i] != 0) { return false; }
+		}
+
+		return true;
+	}
+};
+
+fill_n_int t6;
+
+struct copy_int : public test {
+	copy_int() : test("copy() with integers") {}
+
+	bool run() {
+		size_t count = 7;
+
+		int a[count] = {0};
+		int b[count] = {0};
+
+		for (unsigned i = 0; i < count; ++i) {
+			a[i] = 9;
+		}
+
+		sstl::copy(a, &a[count], b);
+
+		for (unsigned i = 0; i < count; ++i) {
+			if (b[i] != 9) { return false; }
+		}
+
+		return true;
+	}
+};
+
+copy_int t7;
+
+struct copy_n_int : public test {
+	copy_n_int() : test("copy_n() with integers") {}
+
+	bool run() {
+		size_t count = 7;
+		size_t filled = count - 2;
+
+		int a[count] = {0};
+		int b[count] = {0};
+
+		for (unsigned i = 0; i < count; ++i) {
+			a[i] = 9;
+		}
+
+		sstl::copy_n(a, filled, b);
+
+		for (unsigned i = 0; i < filled; ++i) {
+			if (b[i] != 9) { return false; }
+		}
+
+		for (unsigned i = filled; i < count; ++i) {
+			if (b[i] != 0) { return false; }
+		}
+
+		return true;
+	}
+};
+
+copy_n_int t8;
+
 } /* namespace algorithm */
