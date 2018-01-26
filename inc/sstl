@@ -8,6 +8,6 @@
 #ifndef STATIC_STL_SSTL_H_
 #define STATIC_STL_SSTL_H_
 
-
+#include "algorithm.h"
 
 #endif /* STATIC_STL_SSTL_H_ */
