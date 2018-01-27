@@ -1,6 +1,8 @@
 #ifndef STATIC_STL_ALGORITHM_H_
 #define STATIC_STL_ALGORITHM_H_
 
+#include "iterator.h"
+
 namespace sstl {
 
 /** Exchanges the given values. */
@@ -128,6 +130,26 @@ bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
 	}
 
 	return (first1 == last1) && (first2 != last2);
+}
+
+/** Reverses the order of the elements in the range [first, last]. */
+template<class BidirIt>
+inline void reverse(BidirIt first, BidirIt last) {
+	for (; first != last && first != --last; ++first) { iter_swap(first, last); }
+}
+
+/** Performs a left rotation on a range of elements. */
+template <class ForwardIt>
+ForwardIt rotate(ForwardIt first, ForwardIt n_first, ForwardIt last) {
+	if (first == n_first) { return last; }
+
+	if (n_first == last) { return first; }
+
+	reverse(first, n_first);
+	reverse(n_first, last);
+	reverse(first, last);
+
+	return first + distance(n_first, last);
 }
 
 } /* namespace sstl */

@@ -225,3 +225,61 @@ TEST_CASE("Lexicographically compare values", "[comparison]") {
 		REQUIRE(!sstl::lexicographical_compare(&a[3], &a[3], a, a));
 	}
 }
+
+TEST_CASE("Reverse an array", "[reverse]") {
+	SECTION("With an even number of elements") {
+		const size_t count = 4;
+		int start[count] = {0, 1, 2, 3};
+		int finish[count] = {3, 2, 1, 0};
+
+		sstl::reverse(start, &start[count]);
+
+		REQUIRE(start[0] == finish[0]);
+		REQUIRE(start[1] == finish[1]);
+		REQUIRE(start[2] == finish[2]);
+		REQUIRE(start[3] == finish[3]);
+	}
+
+	SECTION("With an odd number of elements") {
+		const size_t count = 3;
+		int start[count] = {0, 1, 2};
+		int finish[count] = {2, 1, 0};
+
+		sstl::reverse(start, &start[count]);
+
+		REQUIRE(start[0] == finish[0]);
+		REQUIRE(start[1] == finish[1]);
+		REQUIRE(start[2] == finish[2]);
+	}
+}
+
+TEST_CASE("Rotate an array", "[rotate]") {
+	const size_t count = 4;
+	int start[count] = {0, 1, 2, 3};
+
+	SECTION("Left rotate") {
+		int finish[count] = {1, 2, 3, 0};
+
+		sstl::rotate(&start[0], &start[1], &start[count]);
+
+		REQUIRE(start[0] == finish[0]);
+		REQUIRE(start[1] == finish[1]);
+		REQUIRE(start[2] == finish[2]);
+		REQUIRE(start[3] == finish[3]);
+	}
+
+	SECTION("Right rotate") {
+		int finish[count] = {3, 0, 1, 2};
+
+		sstl::rotate(
+		    sstl::reverse_iterator<int*>(&start[count]),
+		    sstl::reverse_iterator<int*>(&start[count - 1]),
+		    sstl::reverse_iterator<int*>(&start[0])
+		);
+
+		REQUIRE(start[0] == finish[0]);
+		REQUIRE(start[1] == finish[1]);
+		REQUIRE(start[2] == finish[2]);
+		REQUIRE(start[3] == finish[3]);
+	}
+}
