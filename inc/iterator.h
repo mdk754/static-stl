@@ -108,6 +108,17 @@ bool operator<(const reverse_iterator<Iterator1>& lhs,
 	return lhs.base() < rhs.base();
 }
 
+/** Returns the number of hops from first to last. */
+template<class InputIt>
+inline typename iterator_traits<InputIt>::difference_type distance(
+    InputIt first, InputIt last) {
+	typename iterator_traits<InputIt>::difference_type size = 0;
+
+	while (first != last) { ++size; ++first; }
+
+	return size;
+}
+
 } /* namespace sstl */
 
 #endif /* STATIC_STL_ITERATOR_H_ */
