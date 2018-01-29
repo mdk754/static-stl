@@ -11,6 +11,7 @@
 #include "algorithm.h"
 #include "array.h"
 #include "iterator.h"
+#include "type_traits.h"
 #include "utility.h"
 
 #endif /* STATIC_STL_SSTL_H_ */
