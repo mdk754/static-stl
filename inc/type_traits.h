@@ -6,6 +6,26 @@
 
 namespace sstl {
 
+/** Provides the member typedef type which is the same as T, except that its topmost const-qualifier is removed. */
+template<typename T>
+struct remove_const { typedef T type; };
+
+template<typename T>
+struct remove_const<const T> { typedef T type; };
+
+/** Provides the member typedef type which is the same as T, except that its topmost volatile-qualifier is removed. */
+template<typename T>
+struct remove_volatile { typedef T type; };
+
+template<typename T>
+struct remove_volatile<volatile T> { typedef T type; };
+
+/** Provides the member typedef type which is the same as T, except that its topmost cv-qualifiers are removed. */
+template<typename T>
+struct remove_cv {
+	typedef typename remove_const<typename remove_volatile<T>::type>::type type;
+};
+
 /** Wraps a static constant of specified type. */
 template<typename T, T v>
 struct integral_constant {
@@ -17,6 +37,35 @@ struct integral_constant {
 	operator value_type() const { return value; }
 	value_type operator()() const { return value; }
 };
+
+typedef integral_constant<bool, true>  true_type;
+typedef integral_constant<bool, false> false_type;
+
+namespace detail {
+template<typename> struct is_integral : public false_type {};
+template<> struct is_integral<bool> : public true_type {};
+template<> struct is_integral<char> : public true_type {};
+template<> struct is_integral<unsigned char> : public true_type {};
+template<> struct is_integral<signed char> : public true_type {};
+template<> struct is_integral<wchar_t> : public true_type {};
+template<> struct is_integral<short> : public true_type {};
+template<> struct is_integral<unsigned short> : public true_type {};
+template<> struct is_integral<int> : public true_type {};
+template<> struct is_integral<unsigned int> : public true_type {};
+template<> struct is_integral<long> : public true_type {};
+template<> struct is_integral<unsigned long> : public true_type {};
+
+#if __cplusplus >= 201103
+template<> struct is_integral<char16_t> : public true_type {};
+template<> struct is_integral<char32_t> : public true_type {};
+template<> struct is_integral<long long> : public true_type {};
+template<> struct is_integral<unsigned long long> : public true_type {};
+#endif
+} /* namespace detail */
+
+/** Checks whether T is an integral type. */
+template<typename T> struct is_integral :
+	public detail::is_integral<typename remove_cv<T>::type>::type {};
 
 /** If B is true, enable_if has a public member typedef type, equal to T. */
 template<bool B, class T = void>
