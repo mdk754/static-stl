@@ -10,13 +10,10 @@ struct array_construct : public test {
 
 	bool run() {
 		sstl::array<char, 7> a;
-
 		sstl::array<char, 7> b(42);
-
 		sstl::array<char, 7> c(b);
-
-		sstl::array<char, 12> d(c);
-
+		sstl::array<char>& c1 = c;
+		sstl::array<char, 12> d(c1);
 		sstl::array<int, 5> e(d);
 
 		return
@@ -127,10 +124,6 @@ struct array_capacity : public test {
 		a[5] = 13;
 
 		if (a.empty() || a.size() != 10 || a.max_size() != 10) { return false; }
-
-		sstl::array<int, 0> b;
-
-		if (!b.empty() || b.size() || b.max_size()) { return false; }
 
 		return true;
 	}
