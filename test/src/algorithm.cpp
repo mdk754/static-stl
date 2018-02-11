@@ -242,4 +242,64 @@ struct max_int_equal : public test {
 
 max_int_equal t12;
 
+struct equality : public test {
+	equality() : test("equal() with integers") {}
+
+	bool run() {
+		int a[5] = { 1, 2, 3, 4, 5 };
+		int b[5] = { 1, 2, 3, 4, 5 };
+
+		if (!sstl::equal(&a[0], &a[5], &b[0])) { return false; }
+
+		b[3] = 0;
+
+		if (sstl::equal(&a[0], &a[5], &b[0])) { return false; }
+
+		return true;
+	}
+};
+
+equality t16;
+
+struct lexicographical_comparison : public test {
+	lexicographical_comparison() :
+		test("lexicographical_compare() with integers") {}
+
+	bool run() {
+		int a[5] = { 1, 2, 3, 4, 5 };
+
+		{
+			int b[5] = { 1, 1, 3, 4, 5 };
+
+			if (sstl::lexicographical_compare(&a[0], &a[5], &b[0], &b[5])) {
+				return false;
+			}
+
+			if (!sstl::lexicographical_compare(&b[0], &b[5], &a[0], &a[5])) {
+				return false;
+			}
+		}
+
+		if (sstl::lexicographical_compare(&a[0], &a[5], &a[0], &a[3])) {
+			return false;
+		}
+
+		if (sstl::lexicographical_compare(&a[0], &a[5], &a[0], &a[5])) {
+			return false;
+		}
+
+		if (!sstl::lexicographical_compare(&a[0], &a[0], &a[0], &a[3])) {
+			return false;
+		}
+
+		if (sstl::lexicographical_compare(&a[0], &a[0], &a[3], &a[3])) {
+			return false;
+		}
+
+		return true;
+	}
+};
+
+lexicographical_comparison t17;
+
 } /* namespace algorithm */

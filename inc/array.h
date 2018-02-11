@@ -158,6 +158,18 @@ class array : public array<T> {
 	T data_[N];
 };
 
+template<typename T>
+inline bool operator==(const array<T>& lhs, const array<T>& rhs) {
+	return lhs.size() == rhs.size() &&
+	       equal(lhs.cbegin(), lhs.cend(), rhs.cbegin());
+}
+
+template<typename T>
+inline bool operator<(const array<T>& lhs, const array<T>& rhs) {
+	return lexicographical_compare(lhs.cbegin(), lhs.cend(),
+	                               rhs.cbegin(), rhs.cend());
+}
+
 } /* namespace sstl */
 
 #endif /* STATIC_STL_ARRAY_H_ */
