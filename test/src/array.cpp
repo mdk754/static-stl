@@ -131,4 +131,70 @@ struct array_capacity : public test {
 
 array_capacity t5;
 
+struct array_equality : public test {
+	array_equality() : test("array<> equality") {}
+
+	bool run() {
+		sstl::array<char, 10> a(5);
+
+		{
+			sstl::array<char, 10> b(3);
+
+			if (a == b) { return false; }
+		}
+
+		{
+			sstl::array<char, 10> b(5);
+
+			if (a != b) { return false; }
+		}
+
+		{
+			sstl::array<char, 5> b(5);
+
+			if (a == b) { return false; }
+		}
+
+		return true;
+	}
+};
+
+array_equality t6;
+
+struct array_comparison : public test {
+	array_comparison() : test("array<> comparison") {}
+
+	bool run() {
+		sstl::array<char, 5> a(5);
+
+		{
+			sstl::array<char, 5> b(3);
+
+			if (a < b) { return false; }
+		}
+
+		{
+			sstl::array<char, 5> b(5);
+
+			if (a > b) { return false; }
+		}
+
+		{
+			sstl::array<char, 5> b(3);
+
+			if (a <= b) { return false; }
+		}
+
+		{
+			sstl::array<char, 5> b(5);
+
+			if (!(a >= b)) { return false; }
+		}
+
+		return true;
+	}
+};
+
+array_comparison t7;
+
 } /* namespace array */
