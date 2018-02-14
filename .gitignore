@@ -1,3 +1,1 @@
-test/bin/**
-.idea/**
-CMakeLists.txt
+bin/**
