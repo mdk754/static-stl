@@ -103,8 +103,6 @@ struct array_iterate : public test {
 			*it = i++;
 		}
 
-		using namespace sstl::rel_ops;
-
 		for (auto it = a.crbegin(); it != a.crend(); ++it) {
 			if (*it != --i) { return false; }
 		}
