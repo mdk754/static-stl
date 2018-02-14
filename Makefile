@@ -1,6 +1,6 @@
 PROG := sstl_test
 
-SRC_DIR := test/src
+SRC_DIR := test
 BIN_DIR := bin
 INT_DIR := $(BIN_DIR)/intermediates
 
@@ -8,8 +8,11 @@ SRCS := $(wildcard $(SRC_DIR)/*.cpp)
 OBJS := $(patsubst $(SRC_DIR)%,$(INT_DIR)%,$(SRCS:.cpp=.o))
 DEPS := $(patsubst $(SRC_DIR)%,$(INT_DIR)%,$(SRCS:.cpp=.d))
 
+INCLUDE_PATH := -I inc
+INCLUDE_PATH += -I vendor
+
 CXX      := g++
-CPPFLAGS := -Wall -Wextra -Werror -O0 -I ./inc
+CPPFLAGS := -Wall -Wextra -Werror -O0 $(INCLUDE_PATH)
 LDFLAGS  :=
 
 QUIET := @
