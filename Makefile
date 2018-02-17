@@ -1,4 +1,4 @@
-PROG := sstl_test
+PROG := sstl
 
 SRC_DIR := test
 BIN_DIR := bin
@@ -12,7 +12,7 @@ INCLUDE_PATH := -I inc
 INCLUDE_PATH += -I vendor
 
 CXX      := g++
-CPPFLAGS := -Wall -Wextra -Werror -O0 $(INCLUDE_PATH)
+CPPFLAGS := --std=c++98 -Wall -Wextra -Werror -O0 $(INCLUDE_PATH)
 LDFLAGS  :=
 
 QUIET := @
@@ -21,7 +21,7 @@ QUIET := @
 all: test
 
 test: $(PROG)
-	$(QUIET)$(BIN_DIR)/$(PROG)
+	$(QUIET)$(BIN_DIR)/$(PROG) --use-colour yes --order rand --rng-seed time
 
 $(PROG): $(OBJS)
 	$(QUIET)echo 'Linking ...'
