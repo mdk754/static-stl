@@ -1,198 +1,263 @@
-#include "test.h"
+#include "catch/catch.hpp"
 
 #include "array.h"
-#include "utility.h"
 
-namespace array {
+TEST_CASE("Construct an array", "[constructor]") {
+	SECTION("Default construct") {
+		sstl::array<char, 3> a;
 
-struct array_construct : public test {
-	array_construct() : test("array<> constructors") {}
-
-	bool run() {
-		sstl::array<char, 7> a;
-		sstl::array<char, 7> b(42);
-		sstl::array<char, 7> c(b);
-		sstl::array<char>& c1 = c;
-		sstl::array<char, 12> d(c1);
-		sstl::array<int, 5> e(d);
-
-		return
-		    a[0] == 0 &&
-		    b[2] == 42 &&
-		    c[4] == 42 &&
-		    d[6] == 42 &&
-		    d[7] == 0 &&
-		    e[0] == 42 &&
-		    e[4] == 42;
+		REQUIRE(a[0] == 0);
+		REQUIRE(a[1] == 0);
+		REQUIRE(a[2] == 0);
 	}
-};
 
-array_construct t1;
+	SECTION("Value initialize") {
+		sstl::array<int, 3> a(16);
 
-struct array_assign : public test {
-	array_assign() : test("array<> assignment") {}
+		REQUIRE(a[0] == 16);
+		REQUIRE(a[1] == 16);
+		REQUIRE(a[2] == 16);
+	}
 
-	bool run() {
-		sstl::array<char, 7> a(5);
-		a[1] = 3;
-		a[4] = 19;
+	SECTION("Copy construct") {
+		sstl::array<unsigned char, 3> a(8);
 
-		sstl::array<char, 7> b(0);
+		SECTION("From an equivalent array") {
+			sstl::array<unsigned char, 3> b(a);
+
+			REQUIRE(b[0] == a[0]);
+			REQUIRE(b[1] == a[1]);
+			REQUIRE(b[2] == a[2]);
+		}
+
+		SECTION("From a smaller array") {
+			sstl::array<unsigned char, 5> b(a);
+
+			REQUIRE(b[0] == a[0]);
+			REQUIRE(b[1] == a[1]);
+			REQUIRE(b[2] == a[2]);
+			REQUIRE(b[3] == 0);
+			REQUIRE(b[4] == 0);
+		}
+
+		SECTION("From a larger array") {
+			sstl::array<unsigned char, 2> b(a);
+
+			REQUIRE(b[0] == a[0]);
+			REQUIRE(b[1] == a[1]);
+		}
+
+		SECTION("From a compatible type") {
+			sstl::array<unsigned, 4> b(a);
+
+			REQUIRE(b[0] == a[0]);
+			REQUIRE(b[1] == a[1]);
+			REQUIRE(b[2] == a[2]);
+			REQUIRE(b[3] == 0);
+		}
+	}
+}
+
+TEST_CASE("Assign an array", "[assignment]") {
+	sstl::array<char, 3> a(8);
+
+	SECTION("From an equivalent array") {
+		sstl::array<char, 3> b(16);
+
 		b = a;
 
-		sstl::array<int, 3> c(0);
-		c = a;
-
-		sstl::array<int, 11> d(0);
-		d = a;
-
-		return
-		    b[0] == 5 &&
-		    b[1] == 3 &&
-		    b[4] == 19 &&
-		    c[0] == 5 &&
-		    c[1] == 3 &&
-		    d[0] == 5 &&
-		    d[1] == 3 &&
-		    d[4] == 19 &&
-		    d[7] == 0 &&
-		    d[10] == 0;
+		REQUIRE(b[0] == a[0]);
+		REQUIRE(b[1] == a[1]);
+		REQUIRE(b[2] == a[2]);
 	}
-};
 
-array_assign t2;
+	SECTION("From a smaller array") {
+		sstl::array<char, 5> b(32);
 
-struct array_at : public test {
-	array_at() : test("array<> indexing") {}
+		b = a;
 
-	bool run() {
-		const size_t count = 13;
-		sstl::array<int, count> a;
-
-		for (unsigned i = 0; i < count; ++i) {
-			a.data()[i] = ~i;
-		}
-
-		for (unsigned i = 0; i < count; ++i) {
-			if (a.at(i) != a.data()[i] || a[i] != a.data()[i]) { return false; }
-		}
-
-		int overflow = a.data()[count];
-		a.at(count) = ~overflow;
-
-		if (a.data()[count] != overflow) { return false; }
-
-		a.front() = 42;
-		a.back() = 241;
-
-		return a[0] == 42 && a[count - 1] == 241;
+		REQUIRE(b[0] == a[0]);
+		REQUIRE(b[1] == a[1]);
+		REQUIRE(b[2] == a[2]);
+		REQUIRE(b[3] == 0);
+		REQUIRE(b[4] == 0);
 	}
-};
 
-array_at t3;
+	SECTION("From a larger array") {
+		sstl::array<char, 2> b(48);
 
-struct array_iterate : public test {
-	array_iterate() : test("array<> iterators") {}
+		b = a;
 
-	bool run() {
-		sstl::array<unsigned, 10> a;
-
-		unsigned i = 0;
-
-		for (auto it = a.begin(); it != a.end(); ++it) {
-			*it = i++;
-		}
-
-		for (auto it = a.crbegin(); it != a.crend(); ++it) {
-			if (*it != --i) { return false; }
-		}
-
-		return true;
+		REQUIRE(b[0] == a[0]);
+		REQUIRE(b[1] == a[1]);
 	}
-};
 
-array_iterate t4;
+	SECTION("From a compatible type") {
+		sstl::array<int, 4> b(64);
 
-struct array_capacity : public test {
-	array_capacity() : test("array<> size and capacity") {}
+		b = a;
 
-	bool run() {
-		sstl::array<char, 10> a;
-
-		a[5] = 13;
-
-		if (a.empty() || a.size() != 10 || a.max_size() != 10) { return false; }
-
-		return true;
+		REQUIRE(b[0] == a[0]);
+		REQUIRE(b[1] == a[1]);
+		REQUIRE(b[2] == a[2]);
+		REQUIRE(b[3] == 0);
 	}
-};
+}
 
-array_capacity t5;
+TEST_CASE("Index into an array", "[access]") {
+	const size_t count = 3;
+	sstl::array<int, count> a;
 
-struct array_equality : public test {
-	array_equality() : test("array<> equality") {}
-
-	bool run() {
-		sstl::array<char, 10> a(5);
-
-		{
-			sstl::array<char, 10> b(3);
-
-			if (a == b) { return false; }
-		}
-
-		{
-			sstl::array<char, 10> b(5);
-
-			if (a != b) { return false; }
-		}
-
-		{
-			sstl::array<char, 5> b(5);
-
-			if (a == b) { return false; }
-		}
-
-		return true;
+	for (size_t i = 0; i < count; ++i) {
+		a.data()[i] = ~i;
 	}
-};
 
-array_equality t6;
-
-struct array_comparison : public test {
-	array_comparison() : test("array<> comparison") {}
-
-	bool run() {
-		sstl::array<char, 5> a(5);
-
-		{
-			sstl::array<char, 5> b(3);
-
-			if (a < b) { return false; }
-		}
-
-		{
-			sstl::array<char, 5> b(5);
-
-			if (a > b) { return false; }
-		}
-
-		{
-			sstl::array<char, 5> b(3);
-
-			if (a <= b) { return false; }
-		}
-
-		{
-			sstl::array<char, 5> b(5);
-
-			if (!(a >= b)) { return false; }
-		}
-
-		return true;
+	SECTION("Using random access operator") {
+		REQUIRE(a[0] == ~0);
+		REQUIRE(a[1] == ~1);
+		REQUIRE(a[2] == ~2);
 	}
-};
 
-array_comparison t7;
+	SECTION("Using bounds checked method") {
+		SECTION("Within bounds") {
+			REQUIRE(a.at(0) == ~0);
+			REQUIRE(a.at(1) == ~1);
+			REQUIRE(a.at(2) == ~2);
+		}
 
-} /* namespace array */
+		SECTION("Stack overflow") {
+			int overflow = a.data()[count];
+			a.at(count) = ~overflow;
+
+			REQUIRE(a.at(count) == ~overflow);
+			REQUIRE(a.data()[count] == overflow);
+		}
+	}
+}
+
+TEST_CASE("Iterate over an array", "[iterator]") {
+	typedef sstl::array<int, 3> array;
+	array a(4);
+
+	SECTION("Forward direction") {
+		for (array::iterator it = a.begin(); it != a.end(); ++it) {
+			*it = 16;
+		}
+
+		REQUIRE(a[0] == 16);
+		REQUIRE(a[1] == 16);
+		REQUIRE(a[2] == 16);
+	}
+
+	SECTION("Reverse direction") {
+		int i = 0;
+
+		for (array::reverse_iterator it = a.rbegin();
+		        it != a.rend(); ++it, ++i) {
+			*it = i;
+		}
+
+		REQUIRE(a[0] == 2);
+		REQUIRE(a[1] == 1);
+		REQUIRE(a[2] == 0);
+	}
+
+	SECTION("With const-qualified array") {
+		const array b(16);
+
+		size_t count = 0;
+
+		for (array::const_iterator it = b.begin(); it != b.end(); ++it) {
+			if (*it == 16) { ++count; }
+		}
+
+		REQUIRE(count == 3);
+	}
+}
+
+TEST_CASE("Check the capacity of an array", "[capacity]") {
+	sstl::array<int, 8> a;
+
+	REQUIRE(!a.empty());
+	REQUIRE(a.size() == 8);
+	REQUIRE(a.max_size() == 8);
+}
+
+TEST_CASE("Test arrays for equality", "[comparison]") {
+	sstl::array<char, 3> a(16);
+
+	SECTION("With an equal size array") {
+		SECTION("With same contents") {
+			sstl::array<char, 3> b(16);
+
+			REQUIRE(a == b);
+		}
+
+		SECTION("With differing contents") {
+			sstl::array<char, 3> b(32);
+
+			REQUIRE(a != b);
+		}
+	}
+
+	SECTION("With a smaller size array") {
+		sstl::array<char, 2> b(16);
+		// TODO: This should be able to work without taking a parent reference.
+		sstl::array<char>& aref = a;
+		sstl::array<char>& bref = b;
+
+		REQUIRE(aref != bref);
+	}
+
+	SECTION("With a larger size array") {
+		sstl::array<char, 5> b(16);
+		// TODO: This should be able to work without taking a parent reference.
+		sstl::array<char>& aref = a;
+		sstl::array<char>& bref = b;
+
+		REQUIRE(aref != bref);
+	}
+}
+
+TEST_CASE("Compare arrays lexicographically", "[comparison]") {
+	sstl::array<int, 4> a(16);
+
+	SECTION("With an equal size array") {
+		SECTION("With lower value") {
+			sstl::array<int, 4> b(8);
+
+			REQUIRE(a > b);
+			REQUIRE(a >= b);
+			REQUIRE(b < a);
+			REQUIRE(b <= a);
+		}
+
+		SECTION("With higher value") {
+			sstl::array<int, 4> b(32);
+
+			REQUIRE(a < b);
+			REQUIRE(a <= b);
+			REQUIRE(b > a);
+			REQUIRE(b >= a);
+		}
+
+		SECTION("With equal value") {
+			sstl::array<int, 4> b(16);
+
+			REQUIRE(a <= b);
+			REQUIRE(a >= b);
+		}
+	}
+
+	SECTION("With s smaller size array") {
+		sstl::array<int, 2> b(16);
+
+		REQUIRE(b < a);
+	}
+
+	SECTION("With s larger size array") {
+		sstl::array<int, 8> b(16);
+
+		REQUIRE(a < b);
+	}
+}

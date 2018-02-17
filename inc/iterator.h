@@ -3,6 +3,8 @@
 
 #include <cstddef>
 
+#include "utility.h"
+
 namespace sstl {
 
 struct input_iterator_tag {};
