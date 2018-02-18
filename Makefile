@@ -1,3 +1,6 @@
+NUM_CORES := $(shell grep -c ^processor /proc/cpuinfo)
+MAKEFLAGS += --jobs=$(NUM_CORES) --max-load=$(NUM_CORES)
+
 PROG := sstl
 
 SRC_DIR := test
