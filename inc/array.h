@@ -104,7 +104,7 @@ class array<T> {
 	size_type max_size() const { return capacity_; }
 
   protected:
-	array(size_type cap) : capacity_(cap) {}
+	explicit array(size_type cap) : capacity_(cap) {}
 	~array() {}
 
   private:
