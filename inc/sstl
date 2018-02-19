@@ -11,6 +11,7 @@
 #include "algorithm.h"
 #include "array.h"
 #include "iterator.h"
+#include "memory.h"
 #include "type_traits.h"
 #include "utility.h"
 #include "vector.h"
