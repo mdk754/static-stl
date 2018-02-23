@@ -309,9 +309,29 @@ inline bool operator==(const vector<T>& lhs, const vector<T>& rhs) {
 }
 
 template<typename T>
+inline bool operator!=(const vector<T>& lhs, const vector<T>& rhs) {
+	return !(lhs == rhs);
+}
+
+template<typename T>
 inline bool operator<(const vector<T>& lhs, const vector<T>& rhs) {
 	return lexicographical_compare(lhs.cbegin(), lhs.cend(),
 	                               rhs.cbegin(), rhs.cend());
+}
+
+template<typename T>
+inline bool operator>(const vector<T>& lhs, const vector<T>& rhs) {
+	return rhs < lhs;
+}
+
+template<typename T>
+inline bool operator<=(const vector<T>& lhs, const vector<T>& rhs) {
+	return !(rhs < lhs);
+}
+
+template<typename T>
+inline bool operator>=(const vector<T>& lhs, const vector<T>& rhs) {
+	return !(lhs < rhs);
 }
 
 } /* namespace sstl */
