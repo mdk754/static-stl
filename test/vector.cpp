@@ -164,6 +164,22 @@ TEST_CASE("Index into a vector", "[access]") {
 			REQUIRE(a.data()[count] == overflow);
 		}
 	}
+
+	SECTION("Using front and back") {
+		a.front() = 12;
+		a.back() = 24;
+
+		REQUIRE(a[0] == 12);
+		REQUIRE(a[a.size() - 1] == 24);
+	}
+
+	SECTION("Using underlying pointer") {
+		a.front() = 12;
+		a.back() = 24;
+
+		REQUIRE(a.data()[0] == 12);
+		REQUIRE(a.data()[a.size() - 1] == 24);
+	}
 }
 
 TEST_CASE("Iterate over a vector", "[iterator]") {
@@ -245,6 +261,27 @@ TEST_CASE("Insert values into a vector", "[modifiers]") {
 
 		REQUIRE(a[2] == 'd');
 	}
+
+	SECTION("Many at a time") {
+		a.insert(a.begin() + 1, 2, 'e');
+
+		REQUIRE(a[0] == 'a');
+		REQUIRE(a[1] == 'e');
+		REQUIRE(a[2] == 'e');
+		REQUIRE(a[3] == 'a');
+	}
+
+	SECTION("With a range") {
+		char b[4] = {'b', 'c', 'd', 'e'};
+
+		a.insert(a.begin() + 1, b, b + 4);
+
+		REQUIRE(a[0] == 'a');
+		REQUIRE(a[1] == 'b');
+		REQUIRE(a[2] == 'c');
+		REQUIRE(a[3] == 'd');
+		REQUIRE(a[4] == 'e');
+	}
 }
 
 TEST_CASE("Remove values from a vector", "[modifiers]") {
@@ -284,6 +321,15 @@ TEST_CASE("Remove values from a vector", "[modifiers]") {
 
 		REQUIRE(a.size() == 8);
 		REQUIRE(a.back() == 'a');
+	}
+
+	SECTION("Erase a range of elements") {
+		a.insert(a.begin(), 'b');
+
+		a.erase(a.begin() + 1, a.end());
+
+		REQUIRE(a.size() == 1);
+		REQUIRE(a.back() == 'b');
 	}
 }
 
