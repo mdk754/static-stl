@@ -202,20 +202,14 @@ TEST_CASE("Test arrays for equality", "[comparison]") {
 
 	SECTION("With a smaller size array") {
 		sstl::array<char, 2> b(16);
-		// TODO: This should be able to work without taking a parent reference.
-		sstl::array<char>& aref = a;
-		sstl::array<char>& bref = b;
 
-		REQUIRE(aref != bref);
+		REQUIRE(a != b);
 	}
 
 	SECTION("With a larger size array") {
 		sstl::array<char, 5> b(16);
-		// TODO: This should be able to work without taking a parent reference.
-		sstl::array<char>& aref = a;
-		sstl::array<char>& bref = b;
 
-		REQUIRE(aref != bref);
+		REQUIRE(a != b);
 	}
 }
 

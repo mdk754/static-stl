@@ -394,20 +394,14 @@ TEST_CASE("Test vectors for equality", "[comparison]") {
 
 	SECTION("With a smaller size vector") {
 		sstl::vector<char, 2> b(2, 16);
-		// TODO: This should be able to work without taking a parent reference.
-		sstl::vector<char>& aref = a;
-		sstl::vector<char>& bref = b;
 
-		REQUIRE(aref != bref);
+		REQUIRE(a != b);
 	}
 
 	SECTION("With a larger size vector") {
 		sstl::vector<char, 5> b(5, 16);
-		// TODO: This should be able to work without taking a parent reference.
-		sstl::vector<char>& aref = a;
-		sstl::vector<char>& bref = b;
 
-		REQUIRE(aref != bref);
+		REQUIRE(a != b);
 	}
 }
 
