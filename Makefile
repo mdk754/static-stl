@@ -7,6 +7,8 @@ SRC_DIR := test
 BIN_DIR := bin
 INT_DIR := $(BIN_DIR)/intermediates
 
+EXE := $(BIN_DIR)/$(PROG)
+
 SRCS := $(wildcard $(SRC_DIR)/*.cpp)
 OBJS := $(patsubst $(SRC_DIR)%,$(INT_DIR)%,$(SRCS:.cpp=.o))
 DEPS := $(patsubst $(SRC_DIR)%,$(INT_DIR)%,$(SRCS:.cpp=.d))
@@ -15,20 +17,21 @@ INCLUDE_PATH := -I inc
 INCLUDE_PATH += -I vendor
 
 CXX      := g++
-CPPFLAGS := --std=c++98 -Wall -Wextra -Werror -O0 $(INCLUDE_PATH)
+CPPFLAGS := --std=c++98 -Wall -Wextra -Werror -g -O0 $(INCLUDE_PATH)
 LDFLAGS  :=
 
 QUIET := @
 
-.PHONY: all test
+.PHONY: all test clean
+
 all: test
 
-test: $(PROG)
-	$(QUIET)$(BIN_DIR)/$(PROG) --use-colour yes --order rand --rng-seed time
+test: $(EXE)
+	$(QUIET)$(EXE) --use-colour yes --order rand --rng-seed time
 
-$(PROG): $(OBJS)
+$(EXE): $(OBJS)
 	$(QUIET)echo 'Linking ...'
-	$(QUIET)$(CXX) $(LDFLAGS) -o $(BIN_DIR)/$@ $^
+	$(QUIET)$(CXX) $(LDFLAGS) -o $@ $^
 
 $(INT_DIR):
 	$(QUIET)mkdir -p $(INT_DIR)
@@ -39,7 +42,6 @@ $(INT_DIR)/%.o: $(SRC_DIR)/%.cpp | $(INT_DIR)
 
 -include $(DEPS)
 
-.PHONY: clean
 clean:
 	$(QUIET)echo 'Cleaning ...'
 	$(QUIET)rm -rf ./$(BIN_DIR)
