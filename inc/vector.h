@@ -48,7 +48,7 @@ class vector<T> {
 	/** Replaces the contents with count copies of value val. */
 	void assign(size_type count, const_reference val) {
 		resize(count);
-		fill_n(begin(), size_, val);
+		fill_n(begin(), size(), val);
 	}
 	/** Replaces the contents with copies of those in the range [first, last]. */
 	template<class InputIt>
@@ -83,8 +83,8 @@ class vector<T> {
 	const_iterator cbegin() const { return begin(); }
 
 	/** Returns an iterator to the element following the last element of the container. */
-	iterator end() { return begin() + size_; }
-	const_iterator end() const { return begin() + size_; }
+	iterator end() { return begin() + size(); }
+	const_iterator end() const { return begin() + size(); }
 	const_iterator cend() const { return end(); }
 
 	/** Returns a reverse iterator to the first element of the reversed container. */
@@ -98,9 +98,9 @@ class vector<T> {
 	const_reverse_iterator crend() const { return rend(); }
 
 	/** Checks whether the container has no elements. */
-	bool empty() const { return size_ == 0; }
+	bool empty() const { return size() == 0; }
 	/** Returns the number of elements in the container. */
-	size_type size() const { return size_; }
+	size_type size() const { return static_cast<const child*>(this)->size_; }
 	/** Returns the maximum possible number of elements. */
 	size_type max_size() const {
 		return static_cast<const child*>(this)->data_.size();
@@ -113,8 +113,8 @@ class vector<T> {
 
 	/** Inserts val before pos. */
 	iterator insert(const_iterator pos, const_reference val) {
-		if (size_ < max_size()) {
-			resize(size_ + 1);
+		if (size() < max_size()) {
+			resize(size() + 1);
 			const difference_type d = distance(cbegin(), pos);
 			rotate(rbegin(), rbegin() + 1, reverse_iterator(begin() + d));
 			*iterator(pos) = val;
@@ -123,9 +123,9 @@ class vector<T> {
 		return iterator(pos);
 	}
 	iterator insert(const_iterator pos, size_type count, const_reference val) {
-		if (size_ < max_size()) {
-			count = min(count, max_size() - size_);
-			resize(size_ + count);
+		if (size() < max_size()) {
+			count = min(count, max_size() - size());
+			resize(size() + count);
 			const difference_type d = distance(cbegin(), pos);
 			rotate(rbegin(), rbegin() + count, reverse_iterator(begin() + d));
 			fill_n(iterator(pos), count, val);
@@ -143,55 +143,53 @@ class vector<T> {
 	iterator erase(const_iterator pos) {
 		iterator it = iterator(pos);
 		rotate(it, it + 1, end());
-		resize(size_ - 1);
+		resize(size() - 1);
 		return it;
 	}
 	iterator erase(const_iterator first, const_iterator last) {
 		iterator start = iterator(first);
 		iterator finish = iterator(last);
 		rotate(start, finish, end());
-		resize(size_ - distance(start, finish));
+		resize(size() - distance(start, finish));
 		return start;
 	}
 
 	/** Appends the given element value to the end of the container. */
 	void push_back(const T& value) {
-		if (size_ < max_size()) {
+		if (size() < max_size()) {
 			uninitialized_fill_n(end(), 1, value);
-			++size_;
+			++static_cast<child*>(this)->size_;
 		}
 	}
 
 	/** Removes the last element of the container. */
-	void pop_back() { resize(size_ - 1); }
+	void pop_back() { resize(size() - 1); }
 
 	/** Resizes the container to contain count elements. */
 	void resize(size_type count) {
-		if (count <= size_) {
+		if (count <= size()) {
 			destroy(begin() + count, end());
-			size_ = count;
+			static_cast<child*>(this)->size_ = count;
 		} else {
 			count = min(count, max_size());
 			uninitialized_value_construct(end(), begin() + count);
-			size_ = count;
+			static_cast<child*>(this)->size_ = count;
 		}
 	}
 	void resize(size_type count, const value_type& value) {
-		if (count <= size_) {
+		if (count <= size()) {
 			destroy(begin() + count, end());
-			size_ = count;
+			static_cast<child*>(this)->size_ = count;
 		} else {
 			count = min(count, max_size());
 			uninitialized_fill(end(), begin() + count, value);
-			size_ = count;
+			static_cast<child*>(this)->size_ = count;
 		}
 	}
 
   protected:
-	explicit vector(size_type size) : size_(size) {}
+	vector() {}
 	~vector() {}
-
-	size_type size_;
 
   private:
 	template<class Int>
@@ -201,7 +199,7 @@ class vector<T> {
 	template<class InputIt>
 	void assign_range_dispatch(InputIt first, InputIt last, false_type) {
 		resize(distance(first, last));
-		copy_n(first, size_, begin());
+		copy_n(first, size(), begin());
 	}
 
 	template<class InputIt>
@@ -212,10 +210,10 @@ class vector<T> {
 	template<class InputIt>
 	iterator insert_range_dispatch(const_iterator pos, InputIt first, InputIt last,
 	                               false_type) {
-		if (size_ < max_size()) {
+		if (size() < max_size()) {
 			difference_type count = min(distance(first, last),
-			                            difference_type(max_size() - size_));
-			resize(size_ + count);
+			                            difference_type(max_size() - size()));
+			resize(size() + count);
 			const difference_type d = distance(cbegin(), pos);
 			rotate(rbegin(), rbegin() + count, reverse_iterator(begin() + d));
 			copy_n(first, count, iterator(pos));
@@ -245,27 +243,27 @@ class vector : public vector<T> {
 	typedef typename base::const_reverse_iterator const_reverse_iterator;
 
 	/** Default constructor. */
-	vector() : base(0) {}
+	vector() : size_(0) {}
 	/** Copy constructor. */
-	vector(const vector& other) : base(other.size()) {
-		uninitialized_copy_n(other.begin(), base::size_, base::begin());
+	vector(const vector& other) : size_(other.size()) {
+		uninitialized_copy_n(other.begin(), size_, base::begin());
 	}
 	/** Copy adapter constructor. */
 	template<typename T2>
-	vector(const vector<T2>& other) : base(min(other.size(), N)) {
-		uninitialized_copy_n(other.begin(), base::size_, base::begin());
+	vector(const vector<T2>& other) : size_(min(other.size(), N)) {
+		uninitialized_copy_n(other.begin(), size_, base::begin());
 	}
 	/** Constructs the vector with count default initialized elements. */
-	explicit vector(size_type count) : base(min(count, N)) {
-		uninitialized_value_construct_n(base::begin(), base::size_);
+	explicit vector(size_type count) : size_(min(count, N)) {
+		uninitialized_value_construct_n(base::begin(), size_);
 	}
 	/** Constructs the vector with count elements having value val. */
-	vector(size_type count, const_reference val) : base(min(count, N)) {
-		uninitialized_fill_n(base::begin(), base::size_, val);
+	vector(size_type count, const_reference val) : size_(min(count, N)) {
+		uninitialized_fill_n(base::begin(), size_, val);
 	}
 	/** Constructs the vector with values from range [first, last]. */
 	template<class InputIt>
-	vector(InputIt first, InputIt last) : base(0) {
+	vector(InputIt first, InputIt last) {
 		typedef typename is_integral<InputIt>::type integral;
 		construct_range_dispatch(first, last, integral());
 	}
@@ -285,20 +283,21 @@ class vector : public vector<T> {
 	}
 
   private:
-	template<class Int>
-	void construct_range_dispatch(Int count, Int val, true_type) {
-		base::size_ = min(size_type(count), N);
-		uninitialized_fill_n(base::begin(), base::size_, value_type(val));
-	}
-	template<class InputIt>
-	void construct_range_dispatch(InputIt first, InputIt last, false_type) {
-		base::size_ = min(size_type(distance(first, last)), N);
-		uninitialized_copy_n(first, base::size_, base::begin());
-	}
-
 	typedef typename
 	aligned_storage<sizeof(T), alignment_of<T>::value>::type element;
 
+	template<class Int>
+	void construct_range_dispatch(Int count, Int val, true_type) {
+		size_ = min(size_type(count), N);
+		uninitialized_fill_n(base::begin(), size_, value_type(val));
+	}
+	template<class InputIt>
+	void construct_range_dispatch(InputIt first, InputIt last, false_type) {
+		size_ = min(size_type(distance(first, last)), N);
+		uninitialized_copy_n(first, size_, base::begin());
+	}
+
+	size_type size_;
 	array<element, N> data_;
 };
 
