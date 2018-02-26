@@ -55,7 +55,7 @@ TEST_CASE("Swap two types via iterators", "[swap]") {
 	}
 
 	SECTION("Swap range via iterator") {
-		size_t count = 4;
+		const size_t count = 4;
 
 		unsigned a[count] = {0, 1, 2, 3};
 		unsigned b[count] = {3, 2, 1, 0};
@@ -75,7 +75,7 @@ TEST_CASE("Swap two types via iterators", "[swap]") {
 }
 
 TEST_CASE("Fill array with values", "[fill]") {
-	size_t count = 3;
+	const size_t count = 3;
 	int a[count] = {0};
 
 	SECTION("Fill range using iterators") {
@@ -96,7 +96,7 @@ TEST_CASE("Fill array with values", "[fill]") {
 }
 
 TEST_CASE("Copy array to another", "[copy]") {
-	size_t count = 3;
+	const size_t count = 3;
 	int a[count] = {2, 2, 2};
 
 	SECTION("Copy range using iterators") {
@@ -165,7 +165,7 @@ TEST_CASE("Check the maximum value", "[comparison]") {
 }
 
 TEST_CASE("Check for equality", "[comparison]") {
-	size_t count = 3;
+	const size_t count = 3;
 	int a[count] = {0, 1, 2};
 
 	SECTION("When the values are equal") {
@@ -182,7 +182,7 @@ TEST_CASE("Check for equality", "[comparison]") {
 }
 
 TEST_CASE("Lexicographically compare values", "[comparison]") {
-	size_t count = 5;
+	const size_t count = 5;
 	int a[count] = {0, 1, 2, 3, 4};
 
 	SECTION("First mismatching element defines which is less than") {
